@@ -1,343 +1,224 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using Microsoft.Xna.Framework;
 using StardewModdingAPI;
 using StardewModdingAPI.Events;
 using StardewValley;
 using StardewValley.Characters;
 using StardewValley.Objects;
-using SObject = StardewValley.Object;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Xml.Linq;
 
 namespace TalkingHorse
 {
-    /// <summary>
-    /// Entry class for the Talking Horse mod. The mod adds simple personality
-    /// and a light bribe mechanic to the player's horse while keeping the
-    /// behaviour configurable and fully localizable.
-    /// </summary>
-    public class ModEntry : Mod
+    public sealed class ModEntry : Mod
     {
+        // how often the horse is allowed to speak (in seconds)
+        private const int SpeechCooldownSeconds = 12;
+
+        // how often we check riding state (in ticks)
+        private const int TicksBetweenChecks = 12;
+
         private readonly Random _random = new();
+        private readonly List<string> _lines = new();
 
-        private ModConfig _config = null!;
-
-        private List<string> _lines = new();
-
-        private int _lastSpeechTime = -9999;
-
+        private bool _wasRidingLastTick;
         private int _quietDay = -1;
+        private double _lastSpeechTime;
+
+        private ITranslationHelper T => Helper.Translation;
 
         public override void Entry(IModHelper helper)
         {
-            LoadConfig();
-
             helper.Events.GameLoop.DayStarted += OnDayStarted;
             helper.Events.GameLoop.UpdateTicked += OnUpdateTicked;
             helper.Events.Input.ButtonPressed += OnButtonPressed;
+
+            Monitor.Log("Talking Horse loaded.", LogLevel.Info);
         }
 
-        /// <summary>
-        /// Reload configuration when a save is loaded, so any user edits are
-        /// picked up without needing to restart the game process.
-        /// </summary>
+        // ===================== Events =====================
+
         private void OnDayStarted(object? sender, DayStartedEventArgs e)
         {
             _quietDay = -1;
-            _lastSpeechTime = -9999;
-            LoadConfig();
+            _lastSpeechTime = 0;
+            _wasRidingLastTick = false;
+
+            LoadLines();
+
+            Monitor.Log("New day: reset quiet state & cooldown.", LogLevel.Trace);
         }
 
-        /// <summary>
-        /// Handles the primary update loop. The logic keeps the checks light by
-        /// running only every few real-time ticks and short-circuiting when the
-        /// world is not ready or the player is not mounted.
-        /// </summary>
         private void OnUpdateTicked(object? sender, UpdateTickedEventArgs e)
         {
             if (!Context.IsWorldReady)
-            {
                 return;
+
+            // only run this logic every N ticks
+            if (!e.IsMultipleOf(TicksBetweenChecks))
+                return;
+
+            bool isRiding = Game1.player?.mount is Horse;
+
+            // detect mount / dismount transitions
+            if (Game1.player?.mount is Horse && !_wasRidingLastTick)
+            {
+                Monitor.Log("Detected mount: player just started riding.", LogLevel.Trace);
+                SayGreetingLineToPlayer();
+            }
+            else if (!isRiding && _wasRidingLastTick)
+            {
+                Monitor.Log("Player stopped riding.", LogLevel.Trace);
             }
 
-            Horse? horse = GetMountedHorse();
-            if (horse == null)
-            {
-                return;
-            }
+            _wasRidingLastTick = isRiding;
 
-            if (Game1.dayOfMonth == _quietDay)
-            {
-                return;
-            }
-
-            if (!e.IsMultipleOf(_config.UpdateCheckIntervalTicks))
-            {
-                return;
-            }
-
-            int currentGameSeconds = GetCurrentGameSeconds();
-            if (!IsOffCooldown(currentGameSeconds))
-            {
-                return;
-            }
-
-            if (!_config.EnableRandomSpeech || !_lines.Any())
-            {
-                return;
-            }
-
-            if (_random.NextDouble() > _config.SpeechChance)
-            {
-                return;
-            }
-
-            SayRandomLine(horse);
-            _lastSpeechTime = currentGameSeconds;
+            // talk while riding
+            if (isRiding && !IsQuietToday() && CanSpeakNow())
+                SayRandomLineToPlayer();
         }
 
-        /// <summary>
-        /// Handle right-click interactions to allow bribing the horse with
-        /// mayonnaise or prompting alternate responses when using other items.
-        /// </summary>
         private void OnButtonPressed(object? sender, ButtonPressedEventArgs e)
         {
             if (!Context.IsWorldReady)
-            {
                 return;
-            }
 
-            if (!e.Button.IsActionButton())
-            {
+            // left- or right-click only
+            if (!e.Button.IsUseToolButton() && !e.Button.IsActionButton())
                 return;
-            }
+
+            GameLocation? loc = Game1.currentLocation;
+            if (loc is null)
+                return;
 
             Vector2 tile = e.Cursor.GrabTile;
-            Horse? horse = GetHorseAtTile(tile);
-            if (horse == null)
+
+            // find a horse whose tile matches the clicked tile
+            Horse? horse = loc.characters
+                .OfType<Horse>()
+                .FirstOrDefault(h =>
+                    (int)(h.Position.X / Game1.tileSize) == (int)tile.X &&
+                    (int)(h.Position.Y / Game1.tileSize) == (int)tile.Y);
+
+            if (horse is null)
+                return;
+
+            Monitor.Log($"Horse clicked at tile {tile}.", LogLevel.Trace);
+
+            // if holding mayonnaise, bribe horse to be quiet for the day
+            if (TryConsumeMayonnaise(Game1.player))
             {
+                QuietHorseForDay();
+            }
+        }
+
+        // ===================== Core logic =====================
+
+        private void LoadLines()
+        {
+            _lines.Clear();
+
+            // load horse lines from i18n; stop when a key is missing
+            for (int i = 1; i <= 50; i++)
+            {
+                string key = $"horse.line{i}";
+                string text = T.Get(key);
+
+                if (text == key) // missing translation → stop
+                    break;
+
+                _lines.Add(text);
+            }
+
+            Monitor.Log($"Loaded {_lines.Count} horse lines.", LogLevel.Trace);
+        }
+
+        private bool IsQuietToday()
+        {
+            return _quietDay == Game1.dayOfMonth;
+        }
+
+        private void QuietHorseForDay()
+        {
+            _quietDay = Game1.dayOfMonth;
+
+            Monitor.Log("Horse bribed with mayonnaise. It will stay quiet today.", LogLevel.Info);
+
+            // short confirmation to the player
+            ShowHud(T.Get("horse.quiet")); // add this key in i18n
+        }
+
+        private bool CanSpeakNow()
+        {
+            double now = Game1.currentGameTime?.TotalGameTime.TotalSeconds ?? 0;
+            return now - _lastSpeechTime >= SpeechCooldownSeconds;
+        }
+
+        private void TouchCooldown()
+        {
+            _lastSpeechTime = Game1.currentGameTime?.TotalGameTime.TotalSeconds ?? 0;
+        }
+
+        private void SayGreetingLineToPlayer()
+        {
+            // separate greeting key; if missing, fall back to a random line
+            string text = T.Get("horse.greeting");
+            if (text == "horse.greeting" || string.IsNullOrWhiteSpace(text))
+            {
+                SayRandomLineToPlayer();
                 return;
             }
 
-            if (Game1.player.ActiveObject is SObject obj && obj is not null)
-            {
-                if (IsMayonnaise(obj))
-                {
-                    ConsumeMayo(obj);
-                    QuietHorseForDay(horse);
-                    return;
-                }
+            TouchCooldown();
+            Monitor.Log("Spoke greeting line on mount.", LogLevel.Trace);
 
-                RespondToNonMayo(horse, obj);
+            ShowHud(text);
+        }
+
+        private void SayRandomLineToPlayer()
+        {
+            if (_lines.Count == 0)
                 return;
-            }
 
-            horse.showTextAboveHead(GetText("horse.no-payment"));
-        }
-
-        private void LoadConfig()
-        {
-            _config = Helper.ReadConfig<ModConfig>();
-
-            bool changed = false;
-            if (_config.SpeechIntervalMinutes < 1)
-            {
-                _config.SpeechIntervalMinutes = 10;
-                changed = true;
-            }
-
-            if (_config.UpdateCheckIntervalTicks < 10)
-            {
-                _config.UpdateCheckIntervalTicks = 30;
-                changed = true;
-            }
-
-            if (_config.SpeechChance < 0 || _config.SpeechChance > 1)
-            {
-                _config.SpeechChance = 0.25f;
-                changed = true;
-            }
-
-            if (_config.Lines == null || !_config.Lines.Any())
-            {
-                _config.Lines = BuildDefaultLines();
-                changed = true;
-            }
-
-            _lines = new List<string>(_config.Lines);
-
-            if (changed)
-            {
-                Helper.WriteConfig(_config);
-            }
-        }
-
-        private List<string> BuildDefaultLines()
-        {
-            var translations = new List<string>();
-
-            for (int i = 1; i <= 30; i++)
-            {
-                string key = $"lines.{i}";
-                Translation t = Helper.Translation.Get(key);
-                if (t.HasValue())
-                {
-                    translations.Add(t.ToString());
-                }
-            }
-
-            if (translations.Count == 0)
-            {
-                translations.Add("Nice crop, farmer.");
-                translations.Add("Are we really going mining again?");
-                translations.Add("Brush me or I strike.");
-                translations.Add("We could be napping instead.");
-                translations.Add("Another day, another unpaid shift.");
-            }
-
-            return translations;
-        }
-
-        private bool IsOffCooldown(int currentGameSeconds)
-        {
-            int requiredSeconds = _config.SpeechIntervalMinutes * 60;
-            return currentGameSeconds - _lastSpeechTime >= requiredSeconds;
-        }
-
-        private void SayRandomLine(Horse horse)
-        {
             int index = _random.Next(_lines.Count);
             string text = _lines[index];
 
-            horse.showTextAboveHead(text);
-            Game1.playSound("horse");
+            TouchCooldown();
+            Monitor.Log("Spoke random riding line.", LogLevel.Trace);
+
+            ShowHud(text);
         }
 
-        private void QuietHorseForDay(Horse horse)
+        private void ShowHud(string text)
         {
-            _quietDay = Game1.dayOfMonth;
-            _lastSpeechTime = GetCurrentGameSeconds();
-
-            horse.showTextAboveHead(GetText("horse.quiet"));
-            Game1.playSound("cowboy_monsterhit");
-
-            Monitor.Log("Horse bribed with mayonnaise. It will stay quiet today.", LogLevel.Info);
-        }
-
-        private void RespondToNonMayo(Horse horse, SObject item)
-        {
-            string response = GetText("horse.non-mayo", new { item = item.DisplayName });
-            horse.showTextAboveHead(response);
-        }
-
-        private bool IsMayonnaise(SObject item)
-        {
-            return string.Equals(item.Name, "Mayonnaise", StringComparison.OrdinalIgnoreCase)
-                || string.Equals(item.DisplayName, "Mayonnaise", StringComparison.OrdinalIgnoreCase);
-        }
-
-        private void ConsumeMayo(SObject item)
-        {
-            item.Stack--;
-            if (item.Stack <= 0)
+            // simple text popup; no icon
+            Game1.addHUDMessage(new HUDMessage(text)
             {
-                Game1.player.removeItemFromInventory(item);
-            }
+                noIcon = true
+            });
         }
 
-        private Horse? GetMountedHorse()
+        private bool TryConsumeMayonnaise(Farmer player)
         {
-            foreach (var character in Game1.currentLocation.characters)
+            // Mayo object ID: 306 (vanilla)
+            const int MayonnaiseId = 306;
+
+            for (int i = 0; i < player.Items.Count; i++)
             {
-                if (character is Horse horse && horse.rider.Value == Game1.player)
+                if (player.Items[i] is SObject obj && obj.ParentSheetIndex == MayonnaiseId)
                 {
-                    return horse;
+                    obj.Stack--;
+                    if (obj.Stack <= 0)
+                        player.Items[i] = null;
+
+                    Monitor.Log("Consumed mayonnaise to bribe horse.", LogLevel.Trace);
+                    return true;
                 }
             }
 
-            return null;
+            ShowHud(T.Get("horse.need-mayo")); // “You need mayonnaise to bribe your horse!” etc.
+            return false;
         }
-
-        private Horse? GetHorseAtTile(Vector2 tile)
-        {
-            foreach (var character in Game1.currentLocation.characters)
-            {
-                if (character is Horse horse)
-                {
-                    Vector2 horseTile = horse.getTileLocation();
-                    if (Vector2.Distance(horseTile, tile) <= 0.5f)
-                    {
-                        return horse;
-                    }
-                }
-            }
-
-            return null;
-        }
-
-        private int GetCurrentGameSeconds()
-        {
-            int time = Game1.timeOfDay;
-            int hours = time / 100;
-            int minutes = time % 100;
-
-            int totalMinutes = (hours - 6) * 60 + minutes;
-            if (totalMinutes < 0)
-            {
-                totalMinutes = 0;
-            }
-
-            return totalMinutes * 60;
-        }
-
-        private string GetText(string key, object? tokens = null)
-        {
-            Translation translation = Helper.Translation.Get(key);
-            if (tokens != null)
-            {
-                translation = translation.Tokenize(tokens);
-            }
-
-            if (translation.HasValue())
-            {
-                return translation.ToString();
-            }
-
-            return key;
-        }
-    }
-
-    /// <summary>
-    /// User-editable configuration for the mod. The JSON is generated on first
-    /// launch and may be edited while the game is closed.
-    /// </summary>
-    public class ModConfig
-    {
-        /// <summary>Enable or disable random horse speech entirely.</summary>
-        public bool EnableRandomSpeech { get; set; } = true;
-
-        /// <summary>
-        /// How many in-game minutes must pass between horse comments. Setting
-        /// this to a high value reduces chatter, while a low value keeps the
-        /// horse talkative.
-        /// </summary>
-        public int SpeechIntervalMinutes { get; set; } = 10;
-
-        /// <summary>
-        /// Chance (0.0 - 1.0) that the horse speaks on a valid check. This is
-        /// applied after the cooldown, so lowering it makes the horse quieter.
-        /// </summary>
-        public float SpeechChance { get; set; } = 0.25f;
-
-        /// <summary>
-        /// Number of real-time update ticks to wait between checks. SMAPI runs
-        /// 60 ticks per second; a default of 30 keeps CPU usage light.
-        /// </summary>
-        public uint UpdateCheckIntervalTicks { get; set; } = 30;
-
-        /// <summary>
-        /// Custom speech lines. If empty, localized defaults are used instead.
-        /// </summary>
-        public List<string> Lines { get; set; } = new();
     }
 }
