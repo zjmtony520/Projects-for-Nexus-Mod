@@ -1,0 +1,7 @@
+{
+  "MaxHealth": 100,
+  "AttackDamage": 15,
+  "AttackRange": 1.5,
+  "AttackCooldownTicks": 30,
+  "OnlyAtNight": false
+}
