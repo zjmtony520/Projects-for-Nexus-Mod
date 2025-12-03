@@ -7,6 +7,7 @@ using StardewModdingAPI.Events;
 using StardewValley;
 using StardewValley.Characters;
 using StardewValley.Objects;
+using SObject = StardewValley.Object;
 
 namespace TalkingHorse
 {
@@ -248,7 +249,7 @@ namespace TalkingHorse
         {
             foreach (var character in Game1.currentLocation.characters)
             {
-                if (character is Horse horse && horse.rider == Game1.player)
+                if (character is Horse horse && horse.rider.Value == Game1.player)
                 {
                     return horse;
                 }
