@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("FarmhandScheduler")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+a69ff7d633a93ef124e0595ae5f598ad51045a55")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f5988c2e88cc16c6e0d6b9e6a80eab523a0df058")]
 [assembly: System.Reflection.AssemblyProductAttribute("FarmhandScheduler")]
 [assembly: System.Reflection.AssemblyTitleAttribute("FarmhandScheduler")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

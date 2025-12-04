@@ -1,0 +1,111 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\zjmto\\Documents\\GitHub\\Projects-for-Nexus-Mod\\FarmhandScheduler\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\GOG Games\\Stardew Valley\\Mods\\FarmhandScheduler\\manifest.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{548D8CEB-FBF0-A333-1832-F8109B04AD69}|FarmhandScheduler.csproj|c:\\users\\zjmto\\documents\\github\\projects-for-nexus-mod\\farmhandscheduler\\modentry.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{548D8CEB-FBF0-A333-1832-F8109B04AD69}|FarmhandScheduler.csproj|solutionrelative:modentry.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{548D8CEB-FBF0-A333-1832-F8109B04AD69}|FarmhandScheduler.csproj|c:\\users\\zjmto\\documents\\github\\projects-for-nexus-mod\\farmhandscheduler\\farmhandconfig.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{548D8CEB-FBF0-A333-1832-F8109B04AD69}|FarmhandScheduler.csproj|solutionrelative:farmhandconfig.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{548D8CEB-FBF0-A333-1832-F8109B04AD69}|FarmhandScheduler.csproj|c:\\users\\zjmto\\documents\\github\\projects-for-nexus-mod\\farmhandscheduler\\farmhandscheduler.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{548D8CEB-FBF0-A333-1832-F8109B04AD69}|FarmhandScheduler.csproj|solutionrelative:farmhandscheduler.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 1,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedHeight": 331,
+          "SelectedChildIndex": -1,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:1:0:{e8034f19-ab72-4f06-83fd-f6832b41aa63}"
+            }
+          ]
+        },
+        {
+          "DockedHeight": 330,
+          "SelectedChildIndex": 1,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{34e76e81-ee4a-11d0-ae2e-00a0c90fffc3}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "manifest.json",
+              "DocumentMoniker": "C:\\GOG Games\\Stardew Valley\\Mods\\FarmhandScheduler\\manifest.json",
+              "RelativeDocumentMoniker": "..\\..\\..\\..\\..\\..\\GOG Games\\Stardew Valley\\Mods\\FarmhandScheduler\\manifest.json",
+              "ToolTip": "C:\\GOG Games\\Stardew Valley\\Mods\\FarmhandScheduler\\manifest.json",
+              "RelativeToolTip": "..\\..\\..\\..\\..\\..\\GOG Games\\Stardew Valley\\Mods\\FarmhandScheduler\\manifest.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAAmAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2025-12-04T02:48:22.934Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "ModEntry.cs",
+              "DocumentMoniker": "C:\\Users\\zjmto\\Documents\\GitHub\\Projects-for-Nexus-Mod\\FarmhandScheduler\\ModEntry.cs",
+              "RelativeDocumentMoniker": "ModEntry.cs",
+              "ToolTip": "C:\\Users\\zjmto\\Documents\\GitHub\\Projects-for-Nexus-Mod\\FarmhandScheduler\\ModEntry.cs",
+              "RelativeToolTip": "ModEntry.cs",
+              "ViewState": "AgIAAOQAAAAAAAAAAAAhwO4AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-04T02:18:35.639Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "FarmhandConfig.cs",
+              "DocumentMoniker": "C:\\Users\\zjmto\\Documents\\GitHub\\Projects-for-Nexus-Mod\\FarmhandScheduler\\FarmhandConfig.cs",
+              "RelativeDocumentMoniker": "FarmhandConfig.cs",
+              "ToolTip": "C:\\Users\\zjmto\\Documents\\GitHub\\Projects-for-Nexus-Mod\\FarmhandScheduler\\FarmhandConfig.cs",
+              "RelativeToolTip": "FarmhandConfig.cs",
+              "ViewState": "AgIAAAsAAAAAAAAAAAAzwAYAAAAzAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-04T02:18:11.04Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "FarmhandScheduler",
+              "DocumentMoniker": "C:\\Users\\zjmto\\Documents\\GitHub\\Projects-for-Nexus-Mod\\FarmhandScheduler\\FarmhandScheduler.csproj",
+              "RelativeDocumentMoniker": "FarmhandScheduler.csproj",
+              "ToolTip": "C:\\Users\\zjmto\\Documents\\GitHub\\Projects-for-Nexus-Mod\\FarmhandScheduler\\FarmhandScheduler.csproj",
+              "RelativeToolTip": "FarmhandScheduler.csproj",
+              "ViewState": "AgIAAAwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2025-12-04T02:18:05.679Z",
+              "EditorCaption": ""
+            }
+          ]
+        },
+        {
+          "DockedHeight": 127,
+          "SelectedChildIndex": -1,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{d78612c7-9962-4b83-95d9-268046dad23a}"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

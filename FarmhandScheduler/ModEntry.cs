@@ -5,6 +5,7 @@ using StardewValley.Buildings;
 using StardewValley.Characters;
 using StardewValley.Locations;
 using StardewValley.Objects;
+using Microsoft.Xna.Framework; // Required for Vector2
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -198,18 +199,19 @@ public class ModEntry : Mod
         if (farm.terrainFeatures is null)
             return;
 
+        // Use ToList() to avoid "Collection modified" errors when we destroy crops
         foreach (var pair in farm.terrainFeatures.Pairs.ToList())
         {
             if (pair.Value is not StardewValley.TerrainFeatures.HoeDirt dirt)
                 continue;
 
+            // Check if there is a crop and if it's ready
             if (dirt.crop is null || !dirt.readyForHarvest())
                 continue;
 
-            // 1.6: indexOfHarvest is a qualified item ID string, not an int
             string harvestId = dirt.crop.indexOfHarvest.Value;
 
-            // create a sample item so we can read its price
+            // --- Price Check Logic ---
             int itemPrice;
             if (StardewValley.ItemRegistry.Create(harvestId, 1) is StardewValley.Object obj)
             {
@@ -217,16 +219,30 @@ public class ModEntry : Mod
             }
             else
             {
-                // non-object items are treated as "expensive" so we don't touch them
                 itemPrice = int.MaxValue;
             }
 
             if (_config.HarvestLowTierOnly && itemPrice > _config.HarvestValueCap)
                 continue;
 
-            // use the built-in harvest logic so regrowth, quality, professions, etc all work
-            // signature (1.5+/1.6): bool harvest(int x, int y, HoeDirt soil, JunimoHarvester? junimo, bool isScythe)
-            _ = dirt.crop.harvest((int)pair.Key.X, (int)pair.Key.Y, dirt, null, false);
+            // --- Fix for 1.6 Regrowth Logic ---
+            // In 1.6, we use GetData() to check the crop's properties.
+            var cropData = dirt.crop.GetData();
+            // If RegrowDays is -1, it's a single-harvest crop (like Parsnip).
+            // If it is > 0, it continues to grow (like Blueberries).
+            bool isRegrowingCrop = cropData != null && cropData.RegrowDays != -1;
+
+            Vector2 tileLocation = pair.Key;
+
+            // Attempt harvest
+            bool success = dirt.crop.harvest((int)tileLocation.X, (int)tileLocation.Y, dirt, null, false);
+
+            // If harvest succeeded AND it is NOT a regrowing crop, we must manually destroy it.
+            if (success && !isRegrowingCrop)
+            {
+                // 1.6 Update: destroyCrop now typically takes (Vector2 tileLocation, bool showAnimation)
+                dirt.destroyCrop(true);
+            }
         }
     }
 
