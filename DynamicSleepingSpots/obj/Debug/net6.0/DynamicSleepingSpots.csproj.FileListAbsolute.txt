@@ -1,0 +1,9 @@
+C:\Users\zjmto\Documents\GitHub\Projects-for-Nexus-Mod\DynamicSleepingSpots\obj\Debug\net6.0\DynamicSleepingSpots.csproj.AssemblyReference.cache
+C:\Users\zjmto\Documents\GitHub\Projects-for-Nexus-Mod\DynamicSleepingSpots\obj\Debug\net6.0\DynamicSleepingSpots.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\zjmto\Documents\GitHub\Projects-for-Nexus-Mod\DynamicSleepingSpots\obj\Debug\net6.0\DynamicSleepingSpots.AssemblyInfoInputs.cache
+C:\Users\zjmto\Documents\GitHub\Projects-for-Nexus-Mod\DynamicSleepingSpots\obj\Debug\net6.0\DynamicSleepingSpots.AssemblyInfo.cs
+C:\Users\zjmto\Documents\GitHub\Projects-for-Nexus-Mod\DynamicSleepingSpots\obj\Debug\net6.0\DynamicSleepingSpots.csproj.CoreCompileInputs.cache
+C:\Users\zjmto\Documents\GitHub\Projects-for-Nexus-Mod\DynamicSleepingSpots\obj\Debug\net6.0\DynamicSleepingSpots.sourcelink.json
+C:\Users\zjmto\Documents\GitHub\Projects-for-Nexus-Mod\DynamicSleepingSpots\bin\Debug\net6.0\DynamicSleepingSpots.deps.json
+C:\Users\zjmto\Documents\GitHub\Projects-for-Nexus-Mod\DynamicSleepingSpots\bin\Debug\net6.0\DynamicSleepingSpots.dll
+C:\Users\zjmto\Documents\GitHub\Projects-for-Nexus-Mod\DynamicSleepingSpots\obj\Debug\net6.0\DynamicSleepingSpots.dll

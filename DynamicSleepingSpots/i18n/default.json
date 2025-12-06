@@ -6,36 +6,66 @@
   "rescuer.spouse": "Your partner took care of you at home.",
   "rescuer.junimos": "Junimos whisked you to a soft patch of grass.",
   "rescuer.wake": "You wake up where you fell.",
-  "buff.harvey": "Clinic care",
-  "buff.linus": "Forest kindness",
-  "buff.guild": "Adventurer's resolve",
-  "buff.spouse": "Loving care",
-  "buff.junimos": "Junimo luck",
-  "buff.wake": "Achy muscles",
   "severity.mild": "early stumble",
   "severity.severe": "late collapse",
   "message.summary": "{{rescuer}} You lost {{gold}}g, {{items}} item(s), and {{xp}} XP ({{severity}}).",
+
   "config.enableMod.name": "Enable mod",
-  "config.enableMod.tooltip": "Toggle Dynamic Sleeping Spots on or off.",
+  "config.enableMod.tooltip": "Master switch. Turn this off to completely disable Dynamic Sleeping Spots.",
+
   "config.intensity.name": "Penalty intensity",
-  "config.intensity.tooltip": "Choose between softer or harder penalties.",
+  "config.intensity.tooltip": "Soft = lighter penalties. Hard = stronger penalties for gold, items, and XP.",
+
+  "config.penalties.tooltip": "Choose which penalty types you want when you collapse and how strong they are.",
+
   "config.gold.name": "Enable gold penalties",
+  "config.gold.tooltip": "When enabled, collapsing costs a percentage of your carried gold based on where you passed out.",
+
   "config.items.name": "Enable item penalties",
+  "config.items.tooltip": "When enabled, you may lose extra inventory items (never tools) when you collapse.",
+
   "config.xp.name": "Enable XP penalties",
-  "config.buffs.name": "Enable buffs",
-  "config.friendship.name": "Enable friendship effects",
+  "config.xp.tooltip": "When enabled, collapsing will remove some skill experience depending on where it happened.",
+
   "config.maxgold.name": "Max gold loss",
+  "config.maxgold.tooltip": "Absolute cap on how much gold you can lose from a single collapse, regardless of percentage.",
+
   "config.basegold.farm": "Base gold loss % on farm",
+  "config.basegold.farm.tooltip": "Percentage of carried gold lost when collapsing on your farm (before intensity and rescuer modifiers).",
+
   "config.basegold.town": "Base gold loss % in town",
+  "config.basegold.town.tooltip": "Percentage of carried gold lost when collapsing in Pelican Town or nearby outdoor areas.",
+
   "config.basegold.mines": "Base gold loss % in mines",
+  "config.basegold.mines.tooltip": "Percentage of carried gold lost when collapsing in mines, Skull Cavern, or volcano dungeon.",
+
   "config.basegold.desert": "Base gold loss % in desert",
+  "config.basegold.desert.tooltip": "Percentage of carried gold lost when collapsing in the Calico Desert.",
+
   "config.basegold.home": "Base gold loss % at home",
+  "config.basegold.home.tooltip": "Percentage of carried gold lost when collapsing inside your farmhouse.",
+
   "config.basegold.other": "Base gold loss % other",
+  "config.basegold.other.tooltip": "Percentage of carried gold lost when collapsing in other outdoor locations not listed above.",
+
   "config.basexp.farming": "Base XP loss farming",
+  "config.basexp.farming.tooltip": "Amount of farming XP lost when collapsing in farm-related locations (like the farm).",
+
   "config.basexp.combat": "Base XP loss combat",
+  "config.basexp.combat.tooltip": "Amount of combat XP lost when collapsing in dangerous locations (mines or desert).",
+
   "config.basexp.foraging": "Base XP loss foraging",
+  "config.basexp.foraging.tooltip": "Amount of foraging XP lost when collapsing in town or general outdoor areas.",
+
   "config.basexp.generic": "Base XP loss generic",
+  "config.basexp.generic.tooltip": "Fallback XP loss used when the location doesn't match any other category.",
+
   "config.baseitems.mines": "Base extra items lost in mines",
+  "config.baseitems.mines.tooltip": "Base number of extra inventory items you can lose when collapsing in the mines.",
+
   "config.baseitems.desert": "Base extra items lost in desert",
-  "config.log": "Log collapse stories"
+  "config.baseitems.desert.tooltip": "Base number of extra inventory items you can lose when collapsing in the desert.",
+
+  "config.log": "Log collapse stories",
+  "config.log.tooltip": "Write a detailed summary of each collapse (rescuer, gold, items, XP) to the SMAPI console."
 }
