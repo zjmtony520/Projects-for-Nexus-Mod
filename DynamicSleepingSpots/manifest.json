@@ -1,0 +1,10 @@
+{
+  "Name": "Dynamic Sleeping Spots",
+  "Author": "ChatGPT",
+  "Version": "1.0.0",
+  "Description": "Adds narrative collapse stories with varied penalties and rescuers when you pass out.",
+  "UniqueID": "ChatGPT.DynamicSleepingSpots",
+  "EntryDll": "DynamicSleepingSpots.dll",
+  "MinimumApiVersion": "4.0.0",
+  "UpdateKeys": []
+}
